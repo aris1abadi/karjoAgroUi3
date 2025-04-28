@@ -65,6 +65,8 @@ export let networkMode = writable(networkSelect.MODE_OFF);
 export const kontrolID = persisted('kontrolID', 'KA-E8C9')
 export let networkSetup = writable({ mode: false, ssid: "", password: "", mqttBroker: "", mqttPort: 1883 })
 
+export let spinnerShow=  writable([false,false,false,false]);
+
 export let waterLevel = 0;
 export let myTask = writable([{
   nama: 'Temperature',
@@ -538,6 +540,11 @@ function cekMqttMsg(topic, msg_payload) {
           task[numberTask] = { ...task[numberTask], enable: parseInt(msg_payload) };
           return task;
         });
+        spinnerShow.update(spin => {
+          spin[numberTask] = false;
+          return spin;
+        });
+        
       } else if (msg_cmd === "aktuator1") {
         myTask.update(task => {
           task[numberTask] = { ...task[numberTask], aktuator1: parseInt(msg_payload) };
@@ -689,6 +696,7 @@ async function connect() {
       );
       bleConnected = true;
       bleIsConnected.set(true)
+      networkMode.set(networkSelect.MODE_BT)
       ////window.term_.io.println('\r\n' + bleDevice.name + ' Connected.\n'
       tes();
       //setConnButtonState(true);

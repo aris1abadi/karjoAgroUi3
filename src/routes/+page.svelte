@@ -1,8 +1,9 @@
 <script>
-	import { Button, Modal } from 'flowbite-svelte';
+	import { Button, Modal,Spinner } from 'flowbite-svelte';
 
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
+	
 
 	import {
 		myTask,
@@ -21,7 +22,8 @@
 		kontrolID,
 		networkSetup,
 		sensorType,
-		msgType
+		msgType,
+		spinnerShow
 	} from '$lib/stores';
 
 	let defaultModal = false;
@@ -32,6 +34,7 @@
 	let minSpinner = 10;
 	let maxSpinner = 100;
 	let volume = 80;
+	
 
 	let aktuator1Select = 0;
 	let aktuator2Select = 0;
@@ -139,6 +142,8 @@
 		} else {
 			$myTask[idx].enable = 0;
 		}
+		$spinnerShow[idx] = true;
+		setTimeout(() => $spinnerShow[idx] = false,3000)
 
 		if (!kirimMsg(msgType.TASK, idx, 'enable', String($myTask[idx].enable))) {
 			$myTask[idx].enable = lastEnableStatus;
@@ -392,7 +397,7 @@
 	<meta name="description" content="karjoAgro kontrol" />
 </svelte:head>
 
-<section class="app mainbg">
+<section class="app">
 	<!--Header-->
 	<div class="text-center text-sm">karjoAgro</div>
 	<div class="text-center font-mono text-4xl font-bold text-white">Agro Kontrol</div>
@@ -401,11 +406,16 @@
 		{#each $myTask as dataShow, idx}
 			<div class="h-42 w-full rounded-lg bg-white p-0 shadow">
 				<button
+
 					class={dataShow.enable == 0
 						? 'font-monospace mt-0 h-8 w-full  bg-red-500 text-center text-sm font-bold text-white '
 						: 'font-monospace mt-0 h-8 w-full  bg-green-500 text-center text-sm font-bold text-white '}
 					on:click={() => enableClick(idx)}
 				>
+				{#if $spinnerShow[idx]}
+				<Spinner class="me-3" bg="white" size="5" color="yellow" />
+				{/if}
+				
 					Auto{dataShow.nama}
 				</button>
 
@@ -502,7 +512,7 @@
 		{/each}
 	</div>
 
-	<Modal class="w-6/10" title={setupTitle} bind:open={defaultModal} autoclose>
+	<Modal class="w-8/10" title={setupTitle} bind:open={defaultModal} autoclose>
 		{#if setupMode === 0}
 			<div class="mx-auto grid max-w-sm grid-cols-2 gap-2">
 				<div class="col-span-2">
@@ -698,7 +708,7 @@
 		{:else}
 			<!--for setupkontroller network-->
 			<div class="mx-auto grid max-w-sm grid-cols-2 gap-4">
-				{#if $networkMode === networkSelect.MODE_LOCAL}
+				{#if $networkMode === networkSelect.MODE_BT}
 					<div class="col-span-2">
 						<input
 							id="checked-checkbox"
