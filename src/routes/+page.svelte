@@ -511,7 +511,7 @@
 			</div>
 		{/each}
 	</div>
-
+</section>
 	<Modal class="w-8/10" title={setupTitle} bind:open={defaultModal} autoclose>
 		{#if setupMode === 0}
 			<div class="mx-auto grid max-w-sm grid-cols-2 gap-2">
@@ -774,7 +774,7 @@
 			<Button color="green" on:click={() => simpanTask()}>Simpan</Button>
 		</svelte:fragment>
 	</Modal>
-</section>
+
 
 <footer class="mt-4">
 	{#if $networkMode != networkSelect.MODE_LOCAL}
