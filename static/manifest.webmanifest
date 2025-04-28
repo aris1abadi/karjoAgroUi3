@@ -1,0 +1,23 @@
+{
+    "name": "Konektor BLE App",
+    "short_name": "BLE App",
+    "description": "Aplikasi untuk koneksi BLE dan kontrol device",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0d47a1",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "/favicon.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/favicon.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  

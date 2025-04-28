@@ -10,6 +10,14 @@ export const networkSelect = {
   MODE_BT: 'Bluethooth',
   MODE_MQTT: 'Online'
 }
+//let setupMode = 0; //0 mode set task,1 mode set device,3 mode alert
+export const modalMode=writable({
+  
+  SET_TASK:0,
+  SET_DEVICE:1,
+  ALERT:2,
+
+})
 
 
 export const taskMode = {
@@ -66,6 +74,8 @@ export const kontrolID = persisted('kontrolID', 'KA-E8C9')
 export let networkSetup = writable({ mode: false, ssid: "", password: "", mqttBroker: "", mqttPort: 1883 })
 
 export let spinnerShow=  writable([false,false,false,false]);
+
+export let isStarted = writable(false);
 
 export let waterLevel = 0;
 export let myTask = writable([{
@@ -340,6 +350,10 @@ export function initMqtt() {
     let getmyTask = pubMqtt + "0/0/getAllTask";
     mqttClient.set(client); // Set mqttClient di davalue=""lam store
     networkMode.set(networkSelect.MODE_MQTT)
+    isStarted.set(true)
+    if(bleConnected){
+      bleConnectionToggle();
+    }
 
     //cekClientId();
 
@@ -362,6 +376,7 @@ export function initMqtt() {
     mqttIsConnected.set(false)
     console.log('Disconnected from MQTT broker');
     networkMode.set(networkSelect.MODE_OFF)
+    isStarted.set(false)
   });
 
 
@@ -697,6 +712,7 @@ async function connect() {
       bleConnected = true;
       bleIsConnected.set(true)
       networkMode.set(networkSelect.MODE_BT)
+      isStarted.set(true)
       ////window.term_.io.println('\r\n' + bleDevice.name + ' Connected.\n'
       tes();
       //setConnButtonState(true);
@@ -720,6 +736,8 @@ function disconnect() {
     bleDevice.gatt.disconnect();
     bleConnected = false;
     bleIsConnected.set(false)
+    networkMode.set(networkSelect.MODE_OFF)
+    isStarted.set(false)
     //setConnButtonState(false);
     logDisplay +=
       "Bluetooth Device connected: " + bleDevice.gatt.connected;
@@ -731,6 +749,8 @@ function disconnect() {
 function onDisconnected() {
   bleConnected = false;
   bleIsConnected.set(false)
+  networkMode.set(networkSelect.MODE_OFF)
+  isStarted.set(false)
   logDisplay += "\r\n" + bleDevice.name + " Disconnected.";
 }
 
